@@ -18,21 +18,31 @@ public class ShatteredSphere : MonoBehaviour
 
     void Start()
     {
+        ShatteredSphereManager manager = GameObject.Find("ShatteredSphereManager").GetComponent<ShatteredSphereManager>();
+        transform.SetParent(manager.transform);
+        manager.addShatteredSphere(this);
+
         audioSource = GetComponent<AudioSource>();
         audioSource.pitch = Random.Range(1f - maxSoundPitchShift, 1f + maxSoundPitchShift);
         audioSource.PlayOneShot(sound);
-        foreach(Transform shard in transform)
+        foreach (Transform shard in transform)
         {
             Rigidbody shardRb = shard.gameObject.GetComponent<Rigidbody>();
             shardRb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
-            StartCoroutine(ShrinkAndDestroy(shard, shardDelay));
+            StartCoroutine(ShrinkAndDestroy(shard));
         }
     }
 
-    IEnumerator ShrinkAndDestroy(Transform shard, float delay)
+    IEnumerator ShrinkAndDestroy(Transform shard)
     {
         runningCoroutines++;
-        yield return new WaitForSeconds(delay);
+        float timePassed = 0;
+
+        while (timePassed < shardDelay)
+        {
+            yield return new WaitForSeconds(0.05f);
+            timePassed += 0.05f;
+        }
         Vector3 newScale = shard.localScale;
 
         while (newScale.x >= 0.1)
@@ -43,7 +53,7 @@ public class ShatteredSphere : MonoBehaviour
         }
         Destroy(shard.gameObject);
         runningCoroutines--;
-        if(runningCoroutines <= 0)
+        if (runningCoroutines <= 0)
         {
             Destroy(gameObject);
         }
