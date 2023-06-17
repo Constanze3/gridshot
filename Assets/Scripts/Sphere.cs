@@ -8,6 +8,7 @@ public class Sphere : Target
 
     public override void onShot()
     {
+        gameObject.SetActive(false);
         Destroy(gameObject);
         Instantiate(shatteredSphere, transform.position, Quaternion.identity);
     }
