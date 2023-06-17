@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class ShatteredSphere : MonoBehaviour
 {
     public float explosionForce;
     public float explosionRadius;
+    public float shardDelay;
     public float shardShrinkFactor;
     public AudioClip sound;
 
@@ -20,7 +22,7 @@ public class ShatteredSphere : MonoBehaviour
         {
             Rigidbody shardRb = shard.gameObject.GetComponent<Rigidbody>();
             shardRb.AddExplosionForce(explosionForce, shard.position, explosionRadius);
-            StartCoroutine(ShrinkAndDestroy(shard, 5));
+            StartCoroutine(ShrinkAndDestroy(shard, shardDelay));
         }
     }
 
@@ -30,13 +32,13 @@ public class ShatteredSphere : MonoBehaviour
         yield return new WaitForSeconds(delay);
         Vector3 newScale = shard.localScale;
 
-        while (newScale.x >= 0)
+        while (newScale.x >= 0.1)
         {
             newScale -= Vector3.one * shardShrinkFactor;
             shard.localScale = newScale;
             yield return new WaitForSeconds(0.05f);
         }
-        Destroy(shard);
+        Destroy(shard.gameObject);
         runningCoroutines--;
         if(runningCoroutines <= 0)
         {
