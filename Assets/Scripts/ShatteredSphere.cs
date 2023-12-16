@@ -16,14 +16,13 @@ public class ShatteredSphere : MonoBehaviour
     private AudioSource audioSource;
     private int runningCoroutines = 0;
 
-    void Start()
+    private void Start()
     {
         ShatteredSphereManager manager = GameObject.Find("ShatteredSphereManager").GetComponent<ShatteredSphereManager>();
-        transform.SetParent(manager.transform);
-        manager.addShatteredSphere(this);
+        manager.AddShatteredSphere(this);
 
         audioSource = GetComponent<AudioSource>();
-        audioSource.pitch = Random.Range(1f - maxSoundPitchShift, 1f + maxSoundPitchShift);
+        // audioSource.pitch = Random.Range(1f - maxSoundPitchShift, 1f + maxSoundPitchShift);
         audioSource.PlayOneShot(sound);
         foreach (Transform shard in transform)
         {
@@ -33,7 +32,27 @@ public class ShatteredSphere : MonoBehaviour
         }
     }
 
-    IEnumerator ShrinkAndDestroy(Transform shard)
+    /// <summary>
+    /// Set the material of all shards in the shattered sphere.
+    /// </summary>
+    /// <param name="material">
+    /// shard material
+    /// </param>
+    public void SetMaterial(Material material) {
+        foreach (Transform shard in transform)
+        {
+            shard.GetComponent<MeshRenderer>().material = material;
+        }
+    }
+
+    /// <summary>
+    /// Shrinks a shard over time and then destroys it.
+    /// </summary>
+    /// <param name="shard">
+    /// shard
+    /// </param>
+    /// <returns></returns>
+    private IEnumerator ShrinkAndDestroy(Transform shard)
     {
         runningCoroutines++;
         float timePassed = 0;

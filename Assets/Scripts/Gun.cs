@@ -26,7 +26,7 @@ public class Gun : MonoBehaviour
         if(hit.transform.gameObject.CompareTag("Target"))
         {
             Target target= hit.transform.GetComponent<Target>();
-            target.onShot();
+            target.OnShot();
         }
     }
 }
