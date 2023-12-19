@@ -26,9 +26,10 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        // audioSource = GetComponent<AudioSource>();
-        // audioSource.clip = musicClips[0];
-        // audioSource.Play();
+        audioSource = GetComponent<AudioSource>();
+        audioSource.clip = musicClips[0];
+        audioSource.loop = true;
+        audioSource.Play();
     }
 
     private void Update()
