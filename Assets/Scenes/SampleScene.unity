@@ -1757,6 +1757,10 @@ MonoBehaviour:
   range: 10
   shootDelay: 0.1
   ShootingAnimationEase: 0.3
+  ShootingAnimationGunAngle: 20
   swayStep: 0.1
-  maxSwayStepDistance: 0.06
-  swaySmooth: 10
+  maxSway: 0.06
+  swayPositionSmooth: 5
+  swayRotationStep: 8
+  maxRotationSway: 20
+  swayRotationSmooth: 5
