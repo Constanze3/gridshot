@@ -10,7 +10,7 @@ public class Shot : MonoBehaviour
     {
         audioSource = GetComponent<AudioSource>();
         audioSource.Play();
-        Invoke("OnAudioOver", audioSource.clip.length);
+        Invoke(nameof(OnAudioOver), audioSource.clip.length);
     }
 
     private void OnAudioOver()
