@@ -8,14 +8,18 @@ public class Gun : MonoBehaviour
     public Transform cam;
     public Transform shotPoint;
     public GameObject shotPrefab;
+    public AudioSource audioSource;
 
     [Header("Properties")]
     public float range = 10;
     public float shootDelay = 0.1f;
 
     [Header("Shooting Animation")]
-    public float ShootingAnimationEase = 0.3f;
-    public float ShootingAnimationGunAngle = 20;
+    public float shootingAnimationEase = 0.3f;
+    public float shootingAnimationGunAngle = 20;
+
+    [Header("Reload Animation")]
+    public float reloadAnimationDuration = 0.5f;
 
     [Header("Sway Position")]
     public float swayStep = 0.1f;
@@ -27,7 +31,15 @@ public class Gun : MonoBehaviour
     public float maxRotationSway = 20;
     public float swayRotationSmooth = 5;
 
+    private bool isShooting = false;
+
+    private bool isReloading = false; // if true we are reloading currently
+    private bool isReloading2 = false; // if false we are not allowed to reload
+
+    // booleans for disabling shooting and reloading
     private bool canShoot = true;
+    private bool canReload = true;
+
     private Coroutine shootingEaseCoroutine;
 
     private void Update()
@@ -36,15 +48,19 @@ public class Gun : MonoBehaviour
         {
             Shoot();
         }
+        else if (Input.GetKeyDown(KeyCode.R))
+        {
+            Reload();
+        }
 
         Sway();
     }
 
     private void Shoot()
     {
-        if (!canShoot) return;
+        if (!canShoot || isShooting || isReloading) return;
 
-        canShoot = false;
+        isShooting = true;
         Invoke(nameof(ResetShoot), shootDelay);
 
         // shooting animation
@@ -65,12 +81,65 @@ public class Gun : MonoBehaviour
             target.OnShot();
         }
     }
-    private void ResetShoot() {
-        canShoot = true;
+
+    private void ResetShoot()
+    {
+        isShooting = false;
     }
 
+    private IEnumerator ShootingAnimation()
+    {
+        isShooting = true;
+        float time = 0;
+        while (time <= shootingAnimationEase)
+        {
+            transform.localRotation = Quaternion.AngleAxis(
+                Mathf.LerpAngle(shootingAnimationGunAngle, 0, time / shootingAnimationEase),
+                Vector3.left
+            );
+            time += Time.deltaTime;
+            yield return null;
+        }
+        isShooting = false;
+    }
 
-    private void Sway() {
+    private void Reload()
+    {
+        if (!canReload || isReloading2 || isShooting) return;
+
+        audioSource.Play();
+        StartCoroutine(ReloadAnimation());
+    }
+
+    private IEnumerator ReloadAnimation()
+    {
+        isReloading = true;
+        isReloading2 = true;
+
+        float time = 0;
+        while (time <= reloadAnimationDuration)
+        {
+            float angle = Mathf.Lerp(0, 360, time / reloadAnimationDuration);
+            transform.localRotation = Quaternion.AngleAxis(angle, Vector3.left);
+            time += Time.deltaTime;
+            yield return null;
+        }
+        transform.localRotation = Quaternion.AngleAxis(0, Vector3.left);
+        isReloading = false;
+
+        // little extra delay at the end
+        // also for the sound to finish
+        // before allowing reloading again
+        yield return new WaitForSeconds(0.2f);
+        isReloading2 = false;
+
+    }
+
+    /// <summary>
+    /// The gun will lean (both with position and rotation) in the opposite direction the mouse is moving.
+    /// </summary>
+    private void Sway()
+    {
         Vector2 mouseInput = new(
                 Input.GetAxis("Mouse X"),
                 Input.GetAxis("Mouse Y")
@@ -94,17 +163,5 @@ public class Gun : MonoBehaviour
         transform.localRotation = Quaternion.Slerp(transform.localRotation, swayRotation, swayRotationSmooth * Time.deltaTime);
     }
 
-    private IEnumerator ShootingAnimation()
-    {
-        float time = 0;
-        while (time <= ShootingAnimationEase)
-        {
-            transform.localRotation = Quaternion.AngleAxis(
-                Mathf.LerpAngle(ShootingAnimationGunAngle, 0, time/ ShootingAnimationEase),
-                Vector3.left
-            );
-            time += Time.deltaTime;
-            yield return null;
-        }
-    }
+
 }
