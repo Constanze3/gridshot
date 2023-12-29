@@ -21,7 +21,7 @@ public class MainMenu : MonoBehaviour
 
     private AudioSource audioSource;
     private Dictionary<string, TMP_Text> gameModeButtonTexts;
-    private GameManager.GameSettings settings;
+    private Game.Settings settings;
 
     private void LoadEditorData()
     {
@@ -41,7 +41,7 @@ public class MainMenu : MonoBehaviour
     {
         audioSource = GetComponent<AudioSource>();
 
-        settings = new GameManager.GameSettings();
+        settings = new Game.Settings();
         GameMode_UpdateDisplay("Zen");
     }
 
@@ -55,10 +55,10 @@ public class MainMenu : MonoBehaviour
     }
 
     public void GameMode_ButtonClicked(string name) {
-        GameManager.GameMode gameMode = name switch
+        Game.GameMode gameMode = name switch
         {
-            "Zen" => GameManager.GameMode.Zen,
-            "Minute" => GameManager.GameMode.Timer,
+            "Zen" => Game.GameMode.Zen,
+            "Minute" => Game.GameMode.Timer,
             _ => throw new NullReferenceException()
         };
 
@@ -75,6 +75,6 @@ public class MainMenu : MonoBehaviour
 
     public void StartClicked() {
         if (settings == null) return;
-        GameManager.Instance.InitializeGame(settings);
+        GameManager.Instance.TryStartGame(settings);
     }
 }

@@ -12,6 +12,8 @@ public class TheGrid : MonoBehaviour
     public int spacing;
     public int targetCount;
 
+    public int Score { get; private set; }
+
     private class TargetData
     {
         public Vector2Int position;
@@ -44,6 +46,8 @@ public class TheGrid : MonoBehaviour
         {
             InstantiateRandomTarget();
         }
+
+        Score = 0;
     }
 
     /// <summary>
@@ -78,6 +82,8 @@ public class TheGrid : MonoBehaviour
     /// </param>
     private void OnTargetDestroyed(Target target)
     {
+        Score++;
+
         targets.RemoveAll(td => td.target == target);
         InstantiateRandomTarget();
     }
