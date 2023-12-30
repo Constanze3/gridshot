@@ -106,4 +106,8 @@ public class Game : MonoBehaviour
         OnEnd?.Invoke();
     }
 
+    public void Stop()
+    {
+        IsPlaying = false;
+    }
 }

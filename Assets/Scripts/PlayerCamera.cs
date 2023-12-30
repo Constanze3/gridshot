@@ -8,13 +8,15 @@ public class PlayerCamera : MonoBehaviour
 
     private Vector2 rotation = Vector2.zero;
 
-    void Start()
+    private void Update()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        Rotate();
     }
 
-    void Update()
+    private void Rotate()
     {
+        if (GameManager.Instance.gameState != GameManager.State.Playing) return;
+
         rotation.x += Input.GetAxis("Mouse X") * sensitivity;
         if (rotation.x < 0)
         {

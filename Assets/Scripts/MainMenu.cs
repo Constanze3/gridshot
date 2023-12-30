@@ -77,4 +77,8 @@ public class MainMenu : MonoBehaviour
         if (settings == null) return;
         GameManager.Instance.TryStartGame(settings);
     }
+
+    public void QuitClicked() {
+        GameManager.Instance.Quit();
+    }
 }

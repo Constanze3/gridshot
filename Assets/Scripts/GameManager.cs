@@ -9,6 +9,7 @@ using UnityEngine.Rendering.Universal;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+    public State gameState { get; private set; }
 
     [Header("Audio")]
     public AudioManager audioManager;
@@ -21,11 +22,12 @@ public class GameManager : MonoBehaviour
     [Header("UI")]
     public GameObject mainMenu;
     public PlayerUI playerUI;
+    public PauseMenu pauseMenu;
 
     [Header("Post Processing")]
     public Volume volume;
 
-    private State gameState;
+    private GameObject player;
     private Blur blur;
 
     public enum State
@@ -33,6 +35,7 @@ public class GameManager : MonoBehaviour
         MainMenu,
         Ready,
         Playing,
+        Paused,
     }
 
     void Awake()
@@ -47,13 +50,27 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void SetState(State state) {
+    private void SetState(State state)
+    {
+        if (state == State.Paused)
+        {
+            Time.timeScale = 0;
+        }
+        else
+        {
+            Time.timeScale = 1;
+        }
+
         this.gameState = state;
         audioManager.UpdateAudio(state);
     }
 
     private void Start()
     {
+        mainMenu.SetActive(true);
+        playerUI.gameObject.SetActive(false);
+        pauseMenu.gameObject.SetActive(false);
+
         volume.profile.TryGet<Blur>(out blur);
         blur.active = true;
 
@@ -64,22 +81,90 @@ public class GameManager : MonoBehaviour
     {
         if (gameState != State.MainMenu) return;
 
+        Cursor.lockState = CursorLockMode.Locked;
         blur.active = false;
+
         mainMenu.SetActive(false);
         playerUI.gameObject.SetActive(true);
 
-        Instantiate(playerPrefab, spawn);
+        player = Instantiate(playerPrefab, spawn);
         game.StartNew(settings);
-
         SetState(State.Playing);
     }
 
     private void Update()
     {
+        switch(gameState) 
+        {
+            case State.Playing:
+                UpdatePlaying();
+                break;
+            case State.Paused:
+                UpdatePaused();
+                break;
+        }
+    }
+
+    private void UpdatePlaying()
+    {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Application.Quit();
+            OpenPauseMenu();
         }
+    }
+
+    private void UpdatePaused()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ClosePauseMenu();
+        }
+    }
+
+    private void OpenPauseMenu()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        blur.active = true;
+
+        playerUI.gameObject.SetActive(false);
+        pauseMenu.gameObject.SetActive(true);
+
+        SetState(State.Paused);
+
+    }
+
+    private void ClosePauseMenu()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        blur.active = false;
+
+        pauseMenu.gameObject.SetActive(false);
+        playerUI.gameObject.SetActive(true);
+
+        SetState(State.Playing);
+    }
+
+    public void LoadMainMenu()
+    {
+        game.Stop();
+        Destroy(player);
+
+        playerUI.gameObject.SetActive(false);
+        pauseMenu.gameObject.SetActive(false);
+
+        blur.active = true;
+        mainMenu.SetActive(true);
+
+        SetState(State.MainMenu);
+    }
+
+    public void Quit()
+    {
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+        #endif
+
+        Application.Quit();
     }
 
 }

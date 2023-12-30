@@ -44,6 +44,8 @@ public class Gun : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.gameState != GameManager.State.Playing) return;
+
         if (Input.GetMouseButtonDown(0))
         {
             Shoot();
