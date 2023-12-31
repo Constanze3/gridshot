@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Gameplay")]
     public Game game;
-    public GameObject playerPrefab;
+    public Player playerPrefab;
     public Transform spawn;
 
     [Header("UI")]
@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
     [Header("Post Processing")]
     public Volume volume;
 
-    private GameObject player;
+    private Player player;
     private Blur blur;
 
     public enum State
@@ -61,8 +61,8 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 1;
         }
 
+        audioManager.UpdateAudio(this.gameState, state);
         this.gameState = state;
-        audioManager.UpdateAudio(state);
     }
 
     private void Start()
@@ -77,6 +77,46 @@ public class GameManager : MonoBehaviour
         SetState(State.MainMenu);
     }
 
+    private void UpdatePlaying()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            OpenPauseMenu();
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            SetPlayerMovementLock(!player.MovementEnabled);
+        }
+    }
+
+    private void SetPlayerMovementLock(bool value)
+    {
+        player.MovementEnabled = value;
+        playerUI.SetMovementLock(!player.MovementEnabled);
+    }
+
+    private void UpdatePaused()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ClosePauseMenu();
+        }
+    }
+
+    private void Update()
+    {
+        switch (gameState)
+        {
+            case State.Playing:
+                UpdatePlaying();
+                break;
+            case State.Paused:
+                UpdatePaused();
+                break;
+        }
+    }
+
     public void TryStartGame(Game.Settings settings)
     {
         if (gameState != State.MainMenu) return;
@@ -88,41 +128,15 @@ public class GameManager : MonoBehaviour
         playerUI.gameObject.SetActive(true);
 
         player = Instantiate(playerPrefab, spawn);
+        SetPlayerMovementLock(false);
+
         game.StartNew(settings);
         SetState(State.Playing);
     }
 
-    private void Update()
+    public void OpenPauseMenu()
     {
-        switch(gameState) 
-        {
-            case State.Playing:
-                UpdatePlaying();
-                break;
-            case State.Paused:
-                UpdatePaused();
-                break;
-        }
-    }
-
-    private void UpdatePlaying()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            OpenPauseMenu();
-        }
-    }
-
-    private void UpdatePaused()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            ClosePauseMenu();
-        }
-    }
-
-    private void OpenPauseMenu()
-    {
+        player.Enabled = false;
         Cursor.lockState = CursorLockMode.None;
         blur.active = true;
 
@@ -133,9 +147,9 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private void ClosePauseMenu()
+    public void ClosePauseMenu()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        player.Enabled = true;
         blur.active = false;
 
         pauseMenu.gameObject.SetActive(false);
@@ -147,7 +161,7 @@ public class GameManager : MonoBehaviour
     public void LoadMainMenu()
     {
         game.Stop();
-        Destroy(player);
+        Destroy(player.gameObject);
 
         playerUI.gameObject.SetActive(false);
         pauseMenu.gameObject.SetActive(false);
@@ -166,5 +180,4 @@ public class GameManager : MonoBehaviour
 
         Application.Quit();
     }
-
 }

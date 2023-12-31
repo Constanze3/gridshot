@@ -21,12 +21,15 @@ public class AudioManager : MonoBehaviour
     private Dictionary<string, AudioClip> musicClips;
     private Dictionary<string, AudioClip> ambianceClips;
 
+    private float defaultMusicVolume;
+    private float defaultAmbianceVolume;
+
     private void LoadEditorData()
     {
         musicClips = new Dictionary<string, AudioClip>();
         foreach (Clip c in m_MusicClips)
         {
-            if(!musicClips.TryAdd(c.name, c.clip))
+            if (!musicClips.TryAdd(c.name, c.clip))
                 throw new Exception("Music clip names should be unique");
         }
 
@@ -41,32 +44,42 @@ public class AudioManager : MonoBehaviour
     private void Awake()
     {
         LoadEditorData();
-    }
 
-    private void Start()
-    {
         musicSource.loop = true;
         ambianceSource.loop = true;
+
+        defaultMusicVolume = musicSource.volume;
+        defaultAmbianceVolume = ambianceSource.volume;
     }
 
-    public void UpdateAudio(GameManager.State state)
+    public void UpdateAudio(GameManager.State oldState, GameManager.State newState)
     {
-        switch (state)
+        switch (newState)
         {
             case GameManager.State.MainMenu:
+                StopFade();
                 musicSource.clip = musicClips["MainMenu"];
                 ambianceSource.clip = ambianceClips["Sea"];
                 musicSource.Play();
                 ambianceSource.Play();
                 break;
             case GameManager.State.Playing:
-                StartCoroutine(FadeOut(musicSource, 1));
+                if (oldState == GameManager.State.MainMenu)
+                {
+                    StartCoroutine(FadeOut(musicSource, 1));
+                }
                 ambianceSource.clip = ambianceClips["Sea"];
                 break;
-            case GameManager.State.Ready:
             default:
                 break;
         }
+    }
+
+    private void StopFade()
+    {
+        StopAllCoroutines();
+        musicSource.volume = defaultMusicVolume;
+        ambianceSource.volume = defaultAmbianceVolume;
     }
 
     private IEnumerator FadeIn(AudioSource source, float time, float volume)
@@ -75,7 +88,7 @@ public class AudioManager : MonoBehaviour
         float t = 0;
         while (t < time)
         {
-            t += Time.deltaTime;
+            t += Time.unscaledDeltaTime;
             source.volume = Mathf.Lerp(0, volume, t / time);
             yield return null;
         }
@@ -87,7 +100,7 @@ public class AudioManager : MonoBehaviour
         float t = 0;
         while (t < time)
         {
-            t += Time.deltaTime;
+            t += Time.unscaledDeltaTime;
             source.volume = Mathf.Lerp(initialVolume, 0, t / time);
             yield return null;
         }

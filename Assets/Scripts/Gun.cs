@@ -6,6 +6,7 @@ public class Gun : MonoBehaviour
 {
     [Header("References")]
     public Transform cam;
+    public Player player;
     public Transform shotPoint;
     public GameObject shotPrefab;
     public AudioSource audioSource;
@@ -44,7 +45,7 @@ public class Gun : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.Instance.gameState != GameManager.State.Playing) return;
+        if (!player.Enabled) return;
 
         if (Input.GetMouseButtonDown(0))
         {

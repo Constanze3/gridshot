@@ -12,7 +12,7 @@ public class TheGrid : MonoBehaviour
     public int spacing;
     public int targetCount;
 
-    public int Score { get; private set; }
+    public event Action OnPoint;
 
     private class TargetData
     {
@@ -46,8 +46,6 @@ public class TheGrid : MonoBehaviour
         {
             InstantiateRandomTarget();
         }
-
-        Score = 0;
     }
 
     /// <summary>
@@ -82,7 +80,7 @@ public class TheGrid : MonoBehaviour
     /// </param>
     private void OnTargetDestroyed(Target target)
     {
-        Score++;
+        OnPoint.Invoke();
 
         targets.RemoveAll(td => td.target == target);
         InstantiateRandomTarget();

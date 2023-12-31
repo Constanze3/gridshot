@@ -8,6 +8,16 @@ public class PauseMenu : MonoBehaviour
 {
     public AudioSource audioSource;
 
+    public void OnButtonClicked_Continue()
+    { 
+        GameManager.Instance.ClosePauseMenu();
+    }
+
+    public void OnButtonClicked_Options()
+    { 
+        // TODO
+    }
+
     public void OnButtonClicked_MainMenu()
     {
         GameManager.Instance.LoadMainMenu();

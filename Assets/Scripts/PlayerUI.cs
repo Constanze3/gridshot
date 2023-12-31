@@ -2,12 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class PlayerUI : MonoBehaviour
 {
-    [Header("References")]
-    public TMP_Text timeText;
-    public TMP_Text scoreText;
+    [SerializeField] private TMP_Text timeText;
+    [SerializeField] private  TMP_Text scoreText;
+    [SerializeField] private Image movementLockImage;
+
+    [SerializeField] private Sprite movementLockedSprite;
+    [SerializeField] private Sprite movementUnlockedSprite;
 
     private struct TimeForDisplay {
         public float minutes;
@@ -54,5 +58,21 @@ public class PlayerUI : MonoBehaviour
     public void SetScore(int score) 
     {
         scoreText.text = score.ToString();
+    }
+
+    /// <summary>
+    /// Updates the movement lock icon.
+    /// </summary>
+    /// <param name="value"></param>
+    public void SetMovementLock(bool value)
+    {
+        if (value)
+        {
+            movementLockImage.sprite = movementLockedSprite;
+        }
+        else
+        {
+            movementLockImage.sprite = movementUnlockedSprite;
+        }
     }
 }

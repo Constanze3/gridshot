@@ -50,6 +50,11 @@ public class Game : MonoBehaviour
     private float time = 0;
     private int score = 0;
 
+    private void Start()
+    {
+        grid.OnPoint += OnTargetDestroyed;
+    }
+
     public void StartNew(Settings settings)
     {
         this.settings = settings;
@@ -96,8 +101,12 @@ public class Game : MonoBehaviour
 
     private void HandleScore()
     {
-        score = grid.Score;
         playerUI.SetScore(score);
+    }
+
+    private void OnTargetDestroyed()
+    {
+        score++;
     }
 
     private void EndGame()
