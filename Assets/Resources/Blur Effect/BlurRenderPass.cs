@@ -29,7 +29,7 @@ public class BlurRenderPass : ScriptableRenderPass
         colorBuffer = renderingData.cameraData.renderer.cameraColorTargetHandle;
         RenderTextureDescriptor descriptor = renderingData.cameraData.cameraTargetDescriptor;
 
-        cmd.GetTemporaryRT(blurBufferID, descriptor, FilterMode.Point);
+        cmd.GetTemporaryRT(blurBufferID, descriptor, FilterMode.Bilinear);
         blurBuffer = new RenderTargetIdentifier(blurBufferID);
     }
 

@@ -9,7 +9,7 @@ public class Blur : VolumeComponent, IPostProcessComponent
 
     public bool IsActive()
     {
-        return (strength.value > 0.0f) && active;
+        return (0.0f < strength.value);
     }
 
     public bool IsTileCompatible()

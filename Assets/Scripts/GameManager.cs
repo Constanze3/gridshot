@@ -30,6 +30,13 @@ public class GameManager : MonoBehaviour
     private Player player;
     private Blur blur;
 
+    // as of creating this, this should not be needed but is alright for testing the shard collision thingy
+    public Player Player
+    { 
+        get { return player;  }
+        set { }
+    }
+
     public enum State
     {
         MainMenu,
@@ -62,7 +69,7 @@ public class GameManager : MonoBehaviour
         }
 
         audioManager.UpdateAudio(this.gameState, state);
-        this.gameState = state;
+        gameState = state;
     }
 
     private void Start()

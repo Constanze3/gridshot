@@ -18,7 +18,6 @@ public class Sphere : Target
         {
             color = UnityEngine.Random.ColorHSV()
         };
-
         GetComponent<Renderer>().material = material;
     }
 

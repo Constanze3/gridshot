@@ -54,7 +54,8 @@ MonoBehaviour:
   m_RendererFeatures:
   - {fileID: -1878332245247344467}
   - {fileID: 6305539999127271286}
-  m_RendererFeatureMap: adc0de57c6d2eee57677ff9438c78157
+  - {fileID: 1589068423097034112}
+  m_RendererFeatureMap: adc0de57c6d2eee57677ff9438c7815780257dc24f810d16
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -95,6 +96,20 @@ MonoBehaviour:
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
+--- !u!114 &1589068423097034112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 644787e17dfbf0c498b22766ffd1cbaf, type: 3}
+  m_Name: Borders
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  material: {fileID: 2100000, guid: 6cc68f098ef0c5740a6a3d708666f275, type: 2}
 --- !u!114 &6305539999127271286
 MonoBehaviour:
   m_ObjectHideFlags: 0
