@@ -1,5 +1,20 @@
 Shader "PostProcessing/BasicOutline"
 {
+    // An Issue
+    // when the default output color is solid and there are multiple cameras, 
+    // then only one camrea has the outline color
+    //
+    // not a problem regarding the purpose of this shader,
+    // maybe it can be solved by some special buffer that contains multiple camera's depth textures taking min values
+
+    // Water Depth
+    // wanted to also have water level as a parameter and check the world position of the texel (somehow reconstructed from depth)
+    // and check if the y coordinate is below a certain level then don't show the border
+    // 
+    // Even after hours and hours of trying I did not manage to do this
+    // Will be using an opaque water plane unterwater instead ig
+    // ):
+
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
@@ -36,7 +51,6 @@ Shader "PostProcessing/BasicOutline"
                 float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
                 float4 screenSpace : TEXCOORD1;
-                float3 camRelativeWorldPos : TEXCOORD2;
             };
 
             sampler2D _MainTex;
@@ -48,10 +62,11 @@ Shader "PostProcessing/BasicOutline"
             v2f vert(appdata v)
             {
                 v2f o;
+
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                o.uv= TRANSFORM_TEX(v.uv, _MainTex);
                 o.screenSpace = ComputeScreenPos(o.vertex);
-                o.camRelativeWorldPos = mul(unity_ObjectToWorld, float4(v.vertex.xyz, 1.0)).xyz - _WorldSpaceCameraPos;
+                
                 return o;
             }
 
@@ -100,24 +115,12 @@ Shader "PostProcessing/BasicOutline"
 
                 float sobelDepth = saturate(length(sobel));
                 bool outline = sobelDepth >= _Threshold;
-                
-                // issue:
-                // when the default output color is solid and there are multiple cameras, 
-                // then only one camrea has the outline color
-                //
-                // not a problem regarding the purpose of this shader,
-                // maybe it can be solved by some special buffer that contains multiple camera's depth textures taking min values
 
-                // wanted to also have water level as a parameter and check the world position of the texel (somehow reconstructed from depth)
-                // and check if the y coordinate is below a certain level then don't show the border
-                // don't know how to do this yet
-
-                float4 output = col;
                 if (outline) {
-                    output = lerp(col, _Color, _Color.a);
+                    return lerp(col, _Color, _Color.a);
                 }
                 
-                return fixed4(output);
+                return col;
             }
 
             ENDCG

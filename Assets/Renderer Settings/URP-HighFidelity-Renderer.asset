@@ -53,9 +53,9 @@ MonoBehaviour:
     hdrDebugViewPS: {fileID: 4800000, guid: 573620ae32aec764abd4d728906d2587, type: 3}
   m_RendererFeatures:
   - {fileID: -1878332245247344467}
+  - {fileID: 5328208529382810050}
   - {fileID: 6305539999127271286}
-  - {fileID: 1589068423097034112}
-  m_RendererFeatureMap: adc0de57c6d2eee57677ff9438c7815780257dc24f810d16
+  m_RendererFeatureMap: adc0de57c6d2eee5c2a1116b6d99f1497677ff9438c78157
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -96,7 +96,7 @@ MonoBehaviour:
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
---- !u!114 &1589068423097034112
+--- !u!114 &5328208529382810050
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -105,11 +105,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 644787e17dfbf0c498b22766ffd1cbaf, type: 3}
-  m_Name: Borders
+  m_Script: {fileID: 11500000, guid: 0662a108c26dcc44a940790492b6f2c6, type: 3}
+  m_Name: Outline
   m_EditorClassIdentifier: 
   m_Active: 1
-  material: {fileID: 2100000, guid: 6cc68f098ef0c5740a6a3d708666f275, type: 2}
 --- !u!114 &6305539999127271286
 MonoBehaviour:
   m_ObjectHideFlags: 0
