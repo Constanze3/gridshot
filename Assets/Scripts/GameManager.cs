@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     public Game game;
     public Player playerPrefab;
     public Transform spawn;
+    public ShatteredSphereManager shatteredSphereManager;
 
     [Header("UI")]
     public GameObject mainMenu;
@@ -29,13 +30,6 @@ public class GameManager : MonoBehaviour
 
     private Player player;
     private Blur blur;
-
-    // as of creating this, this should not be needed but is alright for testing the shard collision thingy
-    public Player Player
-    { 
-        get { return player;  }
-        set { }
-    }
 
     public enum State
     {
@@ -136,6 +130,8 @@ public class GameManager : MonoBehaviour
 
         player = Instantiate(playerPrefab, spawn);
         SetPlayerMovementLock(false);
+
+        shatteredSphereManager.DisableCollision(player.GetComponent<CharacterController>());
 
         game.StartNew(settings);
         SetState(State.Playing);

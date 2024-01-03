@@ -927,6 +927,7 @@ MonoBehaviour:
   playerPrefab: {fileID: 1565181449698790341, guid: 112c9d57dc4d6764d8261be2cde58418,
     type: 3}
   spawn: {fileID: 1869436457}
+  shatteredSphereManager: {fileID: 422358191}
   mainMenu: {fileID: 1395069919}
   playerUI: {fileID: 189463175}
   pauseMenu: {fileID: 1800000795}

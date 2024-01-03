@@ -30,12 +30,6 @@ public class ShatteredSphere : MonoBehaviour
             shardRb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
             StartCoroutine(ShrinkAndDestroy(shard));
         }
-
-        // delete this later
-        foreach (Transform child in transform)
-        {
-            Physics.IgnoreCollision(child.gameObject.GetComponent<Collider>(), GameManager.Instance.Player.GetComponent<CharacterController>());
-        }
     }
 
     /// <summary>
