@@ -14,8 +14,8 @@ public class PauseMenu : MonoBehaviour
     }
 
     public void OnButtonClicked_Options()
-    { 
-        // TODO
+    {
+        GameManager.Instance.OpenOptionsMenu();
     }
 
     public void OnButtonClicked_MainMenu()

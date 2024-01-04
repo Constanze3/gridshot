@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     public GameObject mainMenu;
     public PlayerUI playerUI;
     public PauseMenu pauseMenu;
+    public OptionsMenu optionsMenu;
 
     [Header("Post Processing")]
     public Volume volume;
@@ -78,6 +79,19 @@ public class GameManager : MonoBehaviour
         SetState(State.MainMenu);
     }
 
+    private void Update()
+    {
+        switch (gameState)
+        {
+            case State.Playing:
+                UpdatePlaying();
+                break;
+            case State.Paused:
+                UpdatePaused();
+                break;
+        }
+    }
+
     private void UpdatePlaying()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -101,20 +115,17 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            ClosePauseMenu();
+            if (!optionsMenu.isActiveAndEnabled)
+            {
+                ClosePauseMenu();
+            }
+            else {
+                CloseOptionsMenu();
+            }
         }
-    }
 
-    private void Update()
-    {
-        switch (gameState)
-        {
-            case State.Playing:
-                UpdatePlaying();
-                break;
-            case State.Paused:
-                UpdatePaused();
-                break;
+        if (optionsMenu.isActiveAndEnabled) {
+            player.Sensitivity = optionsMenu.SensitivityMenu.Sensitivity;
         }
     }
 
@@ -130,6 +141,9 @@ public class GameManager : MonoBehaviour
 
         player = Instantiate(playerPrefab, spawn);
         SetPlayerMovementLock(false);
+
+        // TODO remove once saving/loading settings is implemented
+        optionsMenu.SensitivityMenu.Sensitivity = player.Sensitivity;
 
         shatteredSphereManager.DisableCollision(player.GetComponent<CharacterController>());
 
@@ -161,6 +175,34 @@ public class GameManager : MonoBehaviour
         SetState(State.Playing);
     }
 
+    public void OpenOptionsMenu()
+    {
+        switch (gameState)
+        {
+            case State.Paused:
+                pauseMenu.gameObject.SetActive(false);
+                break;
+            default:
+                throw new InvalidOperationException($"should not open options menu from {gameState}");
+        }
+
+        optionsMenu.gameObject.SetActive(true);
+    }
+
+    public void CloseOptionsMenu()
+    {
+        switch (gameState)
+        {
+            case State.Paused:
+                pauseMenu.gameObject.SetActive(true);
+                break;
+            default:
+                throw new InvalidOperationException($"should not close options menu from {gameState}");
+        }
+
+        optionsMenu.gameObject.SetActive(false);
+    }
+
     public void LoadMainMenu()
     {
         game.Stop();
@@ -177,9 +219,9 @@ public class GameManager : MonoBehaviour
 
     public void Quit()
     {
-        #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-        #endif
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
 
         Application.Quit();
     }

@@ -39,9 +39,10 @@ public class Player : MonoBehaviour
         set { movementEnabled = value; }
     }
 
-    public Camera Cam { 
-        get { return cam; }
-        set { }
+    public float Sensitivity
+    { 
+        get { return sensitivity; }
+        set { sensitivity = value; }
     }
 
     private void Awake()
